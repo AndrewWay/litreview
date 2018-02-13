@@ -4,19 +4,62 @@ from collections import *
 from difflib import SequenceMatcher
 
 
-
-maxFrequency = 5
-
-keyWords = ['']
-source_keyWords = ['Waters','OmniSpray','Prosolia','Custom','custom','lab-built']
-year_keyWords = ['2018','2017','2016']
-DESI_keyWords = ['DESI-MSI','DESI','DESI-MS','desorption electrospray ionization']
 mz_keyWords = ['m/z','range','to']
+
+
+keyWords = []
+headers = []
+
+#Year
+year_keyWords = ['2018','2017','2016']
+keyWords.append(year_keyWords)
+headers.append("Year")
+#Source
+source_keyWords = ['Waters','OmniSpray','Prosolia','Custom','custom','lab-built']
+keyWords.append(source_keyWords)
+headers.append("Source")
+#MS
+MS_keyWords = ["Xevo","xevo","LTQ","Thermo","Thermofisher","Orbitrap"]
+keyWords.append(MS_keyWords)
+headers.append("MS")
+#Modality
+modality_keyWords = ["linear","ion","trap"]
+keyWords.append(modality_keyWords)
+headers.append("Modality")
+#Inlet-to-capillary distance
+inletToCap_keyWords = ["inlet","capillary","mm","to"]
+keyWords.append(inletToCap_keyWords)
+headers.append("inlet-to-cap (mm)")
+#Tip-to-surface distance
+
+keyWords.append(tipToSurface_keyWords)
+headers.append("tip-to-surface (mm)")
+#Solvent
+
+keyWords.append(solvent_keyWords)
+headers.append("Solvent")
+#Flowrate
+
+keyWords.append(flowrate_keyWords)
+headers.append("Flow uL/min")
+#Pressure
+
+keyWords.append(pressure_keyWords)
+headers.append("N2 Pressure (PSI)")
+#Ion mode
+
+keyWords.append(ionMode_keyWords)
+headers.append("Ion Mode")
+
+keys = keyWords['source']
+for i in keys:
+  print(i)
 
 
 matches=[]
 matchness=[]
 word_freq = Counter()
+output=""
 
 for one_filename in argv[1:]:
 
@@ -58,4 +101,17 @@ for one_filename in argv[1:]:
       else:
         exit = False
         # ENTER STRING INTO APPROPRIATE SPREADSHEET CELL
-        # MOVE TO NEXT COLUMN  
+        output_string = output_string + "," + user_input
+        # MOVE TO NEXT COLUMN
+      i++
+      if(i>=len(matches)):
+        print("No more matches. Put in best guess?")
+        if not user_input:
+          pass# Do nothing. Just go to next string
+        else:
+          exit = False
+          # ENTER STRING INTO APPROPRIATE SPREADSHEET CELL
+          output_string = output_string + "," + user_input
+          # MOVE TO NEXT COLUMN
+    
+    
