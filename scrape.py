@@ -7,95 +7,104 @@ from difflib import SequenceMatcher
 mz_keyWords = ['m/z','range','to']
 
 
-keyWords = []
+topics = []
 headers = []
+
+#TODO fix this initialization
 
 #Year
 year_keyWords = ['2018','2017','2016']
-keyWords.append(year_keyWords)
+topics.append(year_keyWords)
 headers.append("Year")
 #Source
 source_keyWords = ['Waters','OmniSpray','Prosolia','Custom','custom','lab-built']
-keyWords.append(source_keyWords)
+topics.append(source_keyWords)
 headers.append("Source")
 #MS
 MS_keyWords = ["Xevo","xevo","LTQ","Thermo","Thermofisher","Orbitrap"]
-keyWords.append(MS_keyWords)
+topics.append(MS_keyWords)
 headers.append("MS")
 #Modality
 modality_keyWords = ["linear","ion","trap"]
-keyWords.append(modality_keyWords)
+topics.append(modality_keyWords)
 headers.append("Modality")
 #Inlet-to-capillary distance
-inletToCap_keyWords = ["inlet","capillary","mm","to"]
-keyWords.append(inletToCap_keyWords)
+inletToCap_keyWords = ["inlet","capillary","mm","to","inlet-to-capillary"]
+topics.append(inletToCap_keyWords)
 headers.append("inlet-to-cap (mm)")
 #Tip-to-surface distance
-
-keyWords.append(tipToSurface_keyWords)
+tipToSurface_keyWords = ["tip","surface","to","-","tip-to-surface"]
+topics.append(tipToSurface_keyWords)
 headers.append("tip-to-surface (mm)")
 #Solvent
-
-keyWords.append(solvent_keyWords)
+solvent_keyWords = ["solvent","methanol","water","1:1","acetonitrile","leucine","ACN","DMF","dimethylformamide","formic acid"]
+topics.append(solvent_keyWords)
 headers.append("Solvent")
 #Flowrate
-
-keyWords.append(flowrate_keyWords)
+flowrate_keyWords = ["flowrate","min"]
+topics.append(flowrate_keyWords)
 headers.append("Flow uL/min")
 #Pressure
-
-keyWords.append(pressure_keyWords)
+pressure_keyWords = ["pressure","psi","PSI","N2"]
+topics.append(pressure_keyWords)
 headers.append("N2 Pressure (PSI)")
 #Ion mode
-
-keyWords.append(ionMode_keyWords)
+ionMode_keyWords = ["ion","mode","positive","negative"]
+topics.append(ionMode_keyWords)
 headers.append("Ion Mode")
 
-keys = keyWords['source']
-for i in keys:
-  print(i)
 
 
-matches=[]
-matchness=[]
-word_freq = Counter()
-output=""
-
+#For each file in the arguments
 for one_filename in argv[1:]:
+  output_string=""
+  #Open the file and read its contents
+  print("Text file to import and read:", one_filename)
+  print("\nReading file...\n")
 
-    print("Text file to import and read:", one_filename)
-    print("\nReading file...\n")
+  text_file = open(one_filename, 'r')
+  all_lines = text_file.readlines()
+  text_file.close()
 
-    text_file = open(one_filename, 'r')
-    all_lines = text_file.readlines()
-    text_file.close()
+  print("\nFile read finished!")
+  
+  #For each topic's keywords
+  for keyWords in topics:
+    print("Current keywords: ",keyWords)
+    matches=[]
+    matchness=[]
 
-    print("\nFile read finished!")
-
+    # Search through all lines within the current text file
     for line in all_lines:
-      keyWords = mz_keyWords
-      matchFrequency=0
+      matchFrequency=0 #Keeps track of how many key words appears in a line
+
+      # Store how many key words appear in the line
       for key in keyWords:
+        # Check to see if the line contains one of the topic's keywords
         if key in line:
           if matchFrequency == 0:
-            matches.append(line)
+            matches.append(line) # Add the current line to array containing all lines containing keywords
             matchness.append(1)
             matchFrequency = 1
           else:
             matchness[-1]+=1
           
- 
+    # Sort the lines based on how many keywords they contain in ascending order
     matchness,matches = zip(*sorted(zip(matchness,matches)))
     
     matchness,matches = (list(t) for t in zip(*sorted(zip(matchness,matches))))
     matchness = matchness[::-1]
     matches = matches[::-1]
     
+    # USER PROCESSING SECTION
+    
     exit = True
     i=0
+    #Loop through all lines containing keywords for the current topic
+    #Loop until the user enters some text
     while(exit and i<len(matches)):
       print(matchness[i],matches[i])
-      user_input = input()  
+      user_input = input()
       if not user_input:
         pass# Do nothing. Just go to next string
       else:
@@ -103,15 +112,18 @@ for one_filename in argv[1:]:
         # ENTER STRING INTO APPROPRIATE SPREADSHEET CELL
         output_string = output_string + "," + user_input
         # MOVE TO NEXT COLUMN
-      i++
+      i+=1
       if(i>=len(matches)):
         print("No more matches. Put in best guess?")
+        user_input = input()
         if not user_input:
-          pass# Do nothing. Just go to next string
+          output_string = output_string + ",-" # Add - into cell indicating it was not found
         else:
           exit = False
           # ENTER STRING INTO APPROPRIATE SPREADSHEET CELL
           output_string = output_string + "," + user_input
           # MOVE TO NEXT COLUMN
+  print(headers)
+  print(output_string)
     
     
