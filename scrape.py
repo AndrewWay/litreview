@@ -150,11 +150,14 @@ for one_filename in argv[1:]:
 
   print("\nFile read finished!")
   
+  topicIndex=0
   #For each topic's keywords
   for keyWords in topics:
-    print("Current keywords: ",keyWords)
+    print("Current key words",keyWords)
+    print("Current Topic: ",headers[topicIndex])
     matches=[]
     matchness=[]
+    topicIndex=topicIndex+1
 
     # Search through all lines within the current text file
     for line in all_lines:
