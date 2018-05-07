@@ -135,10 +135,8 @@ def append(output):
   with open(output_file,"a") as myfile:
     myfile.write(output)
     
-append("fuck off")
 #For each file in the arguments
 for one_filename in argv[1:]:
-
   output_string=""
   #Open the file and read its contents
   print("Text file to import and read:", one_filename)
@@ -195,6 +193,22 @@ for one_filename in argv[1:]:
       if not user_input:
         pass# Do nothing. Just go to next string
       else:
+        line_index = all_lines.index(matches[i])
+        startIndex=line_index-1
+        endIndex=line_index+1
+        print(user_input)
+        # Add more context if the user wants to see more
+        while user_input == "COMMAND:MORE":
+
+          #TODO Check if line_index-1 is not out of bounds 
+          for moreIndex in range(startIndex,endIndex):       
+            print(all_lines[moreIndex])
+            
+          
+          startIndex=startIndex-1
+          endIndex=endIndex+1
+          user_input = input()
+          
         exit = False
         # ENTER STRING INTO APPROPRIATE SPREADSHEET CELL
         output_string = output_string + "," + user_input
@@ -210,6 +224,7 @@ for one_filename in argv[1:]:
           # ENTER STRING INTO APPROPRIATE SPREADSHEET CELL
           output_string = output_string + "," + user_input
           # MOVE TO NEXT COLUMN
-  append(output_string)
+
+  append(one_filename[:3]+output_string+"\n")
     
     
