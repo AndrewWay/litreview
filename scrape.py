@@ -1,3 +1,6 @@
+#TODO: Add option to go back to previous lines through COMMAND
+#TODO: Make a database that holds keywords to use for search, and also contains the entered info for each header for a particular paper
+
 from sys import argv
 from string import punctuation
 from collections import *
@@ -16,9 +19,9 @@ headers = []
 #TODO fix this initialization so that the key words are read from files
 
 #Year
-year_keyWords = ['2018','2017','2016']
-topics.append(year_keyWords)
-headers.append("Year")
+#year_keyWords = ['2018','2017','2016','2015','2014','2013']
+#topics.append(year_keyWords)
+#headers.append("Year")
 #Source
 source_keyWords = ['Waters','OmniSpray','Prosolia','Custom','custom','lab-built',"source","ion"]
 topics.append(source_keyWords)
@@ -39,6 +42,10 @@ headers.append("inlet-to-cap (mm)")
 tipToSurface_keyWords = ["tip","surface","to","-","tip-to-surface"]
 topics.append(tipToSurface_keyWords)
 headers.append("tip-to-surface (mm)")
+#Sprayer angle distance
+angle_keyWords = ["sprayer","angle","incidence","degree","°"]
+topics.append(angle_keyWords)
+headers.append("Sprayer angle °")
 #Solvent
 solvent_keyWords = ["solvent","methanol","water","1:1","acetonitrile","leucine","ACN","DMF","dimethylformamide","formic acid"]
 topics.append(solvent_keyWords)
@@ -102,7 +109,7 @@ headers.append("Line Seperation mm")
 #Step 
 step_keyWords = ["step","x-axis","axis","size"]
 topics.append(step_keyWords)
-headers.append("Step mm")
+headers.append("Step um")
 #Scan duration
 scanDuration_keyWords = ["scan","duration","time","ms"]
 topics.append(scanDuration_keyWords)
@@ -155,7 +162,6 @@ for one_filename in argv[1:]:
     print("Current Topic: ",headers[topicIndex])
     matches=[]
     matchness=[]
-    topicIndex=topicIndex+1
 
     # Search through all lines within the current text file
     for line in all_lines:
@@ -186,28 +192,32 @@ for one_filename in argv[1:]:
     i=0
     #Loop through all lines containing keywords for the current topic
     #Loop until the user enters some text
+    if len(matches) == 0:
+      print("No lines found with matches for topic: "+headers[topicIndex])
+      output_string = output_string+",-"
+      
+    topicIndex=topicIndex+1
     while(exit and i<len(matches)):
       print(matchness[i],matches[i])
       user_input = input()
       #maybe make this into a function that can call itself
       if not user_input:
         pass# Do nothing. Just go to next string
-      else:
+      elif user_input == "COMMAND:MORE":
         line_index = all_lines.index(matches[i])
         startIndex=line_index-1
         endIndex=line_index+1
-        print(user_input)
+      
         # Add more context if the user wants to see more
         while user_input == "COMMAND:MORE":
-
           #TODO Check if line_index-1 is not out of bounds 
           for moreIndex in range(startIndex,endIndex):       
             print(all_lines[moreIndex])
-            
-          
+
           startIndex=startIndex-1
           endIndex=endIndex+1
           user_input = input()
+      else:
           
         exit = False
         # ENTER STRING INTO APPROPRIATE SPREADSHEET CELL
