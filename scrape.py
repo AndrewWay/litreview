@@ -1,5 +1,6 @@
 #TODO: Add option to go back to previous lines through COMMAND
 #TODO: Make a database that holds keywords to use for search, and also contains the entered info for each header for a particular paper
+#TODO: After entering COMMAND:MORE, return to the normal state where entering text causes move to next topic
 
 from sys import argv
 from string import punctuation
@@ -51,7 +52,7 @@ solvent_keyWords = ["solvent","methanol","water","1:1","acetonitrile","leucine",
 topics.append(solvent_keyWords)
 headers.append("Solvent")
 #Flowrate
-flowrate_keyWords = ["flowrate","min"]
+flowrate_keyWords = ["flow","rate","ml","mL","flowrate","min"]
 topics.append(flowrate_keyWords)
 headers.append("Flow uL/min")
 #Pressure
@@ -115,7 +116,7 @@ scanDuration_keyWords = ["scan","duration","time","ms"]
 topics.append(scanDuration_keyWords)
 headers.append("Scan duration ms")
 #Velocity
-velocity_keyWords = ["velocity","rate","um/sec","um/s","mm/s"]
+velocity_keyWords = ["scan","surface","velocity","rate","um/sec","um/s","mm/s"]
 topics.append(velocity_keyWords)
 headers.append("Velocity um/s")
 #Substrate
